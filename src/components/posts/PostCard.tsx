@@ -27,6 +27,7 @@ const PostCard = ({
       <h3 className="text-lg font-semibold text-gray-800 line-clamp-2 min-h-[3rem]">{post.title}</h3>
       <p className="text-sm text-gray-600 mt-2 line-clamp-3">{post.body}</p>
       <p className="text-sm text-gray-500 mt-1">Commenter: {userName || post.userId}</p>
+      <p className="text-sm text-gray-500 mt-1">Post Id: { post.id}</p>
 
       {showActions && (
         <ActionButtons item={post} onEdit={onEdit} onDelete={onDelete} />

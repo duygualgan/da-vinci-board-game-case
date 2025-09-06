@@ -4,6 +4,7 @@ import UsersPage from "./pages/UsersPage";
 import PostsPage from "./pages/PostsPage";
 import Navbar from "./components/Navbar";
 import UserDetailPage from "./pages/users/[id]";
+import PostDetail from "./components/posts/PostDetail";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/users" element={<UsersPage />} />
           <Route path="/users/:id" element={<UserDetailPage />} />
           <Route path="/posts" element={<PostsPage />} />
+          <Route path="/posts/:id" element={<PostDetail />} />
         </Routes>
       </main>
     </BrowserRouter>

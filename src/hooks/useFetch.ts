@@ -1,6 +1,5 @@
 import useSWR from "swr";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+import { fetcher } from "../lib/fetcher";
 
 export function useFetch<T>(url: string | null) {
   const { data, error, isLoading } = useSWR<T>(url, fetcher);
