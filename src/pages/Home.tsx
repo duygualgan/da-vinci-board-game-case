@@ -3,7 +3,7 @@ import useSWR from "swr";
 import PostCard from "../components/posts/PostCard";
 import type { Post } from "../types";
 import { fetcher } from "../lib/fetcher";
-
+import Spinner from "../components/Spinner";
 
 const Home = () => {
   const { data, error, isLoading } = useSWR<Post[]>(
@@ -34,7 +34,9 @@ const Home = () => {
         </h2>
 
         {isLoading && (
-          <p className="text-center text-gray-500">Yükleniyor...</p>
+          <div className="flex justify-center py-10">
+            <Spinner />
+          </div>
         )}
         {error && (
           <p className="text-center text-red-500">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { mutate } from "swr";
+import { toast } from "react-toastify";
 
 type Post = {
   id?: number;
@@ -20,7 +21,6 @@ function PostForm({ editingPost, onFinish }: PostFormProps) {
     body: "",
   });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (editingPost) {
@@ -28,15 +28,24 @@ function PostForm({ editingPost, onFinish }: PostFormProps) {
     }
   }, [editingPost]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: name === "userId" ? Number(value) : value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "userId" ? Number(value) : value,
+    }));
+  };
+
+  const handleReset = () => {
+    setFormData({ userId: 1, title: "", body: "" });
+    toast.info("Form cleared");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
 
     try {
       const url = editingPost
@@ -59,23 +68,34 @@ function PostForm({ editingPost, onFinish }: PostFormProps) {
         mutate(
           key,
           (posts: Post[] = []) =>
-            posts.map((p) => (p.id === editingPost.id ? { ...p, ...formData } : p)),
+            posts.map((p) =>
+              p.id === editingPost.id ? { ...p, ...formData } : p
+            ),
           false
         );
-        setMessage("Post updated successfully!");
+        toast.success("Post updated successfully!");
       } else {
-        mutate(key, (posts: Post[] = []) => [{ ...formData, id: data.id }, ...posts], false);
-        setMessage(`Post created successfully! ID: ${data.id}`);
+        mutate(
+          key,
+          (posts: Post[] = []) => [{ ...formData, id: data.id }, ...posts],
+          false
+        );
+        toast.success("Post created successfully!");
       }
 
       setFormData({ userId: 1, title: "", body: "" });
       onFinish?.();
     } catch {
-      setMessage("Something went wrong!");
+      toast.error("Something went wrong!");
     } finally {
       setLoading(false);
     }
   };
+
+  const isFormEmpty =
+    formData.userId === 1 &&
+    formData.title.trim() === "" &&
+    formData.body.trim() === "";
 
   return (
     <form
@@ -115,15 +135,31 @@ function PostForm({ editingPost, onFinish }: PostFormProps) {
         className="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
       />
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
-      >
-        {loading ? (editingPost ? "Updating..." : "Creating...") : editingPost ? "Update" : "Create"}
-      </button>
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 flex-1"
+        >
+          {loading
+            ? editingPost
+              ? "Updating..."
+              : "Creating..."
+            : editingPost
+            ? "Update"
+            : "Create"}
+        </button>
 
-      {message && <p className="text-sm text-center mt-2 text-gray-700">{message}</p>}
+        {!isFormEmpty && (
+          <button
+            type="button"
+            onClick={handleReset}
+            className="bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-400 transition flex-1"
+          >
+            Clear
+          </button>
+        )}
+      </div>
     </form>
   );
 }

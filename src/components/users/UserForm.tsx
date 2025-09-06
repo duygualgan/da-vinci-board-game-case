@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { mutate } from "swr";
+import { toast } from "react-toastify";
 
 type User = {
   id?: number;
@@ -15,14 +16,10 @@ interface UserFormProps {
 }
 
 function UserForm({ editingUser, onFinish }: UserFormProps) {
-  const [formData, setFormData] = useState<User>({
-    name: "",
-    email: "",
-    phone: "",
-  });
+  const initialFormData: User = { name: "", email: "", phone: "" };
 
+  const [formData, setFormData] = useState<User>(initialFormData);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (editingUser) {
@@ -38,13 +35,11 @@ function UserForm({ editingUser, onFinish }: UserFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
 
     try {
       const url = editingUser
         ? `https://jsonplaceholder.typicode.com/users/${editingUser.id}`
         : "https://jsonplaceholder.typicode.com/users";
-
       const method = editingUser ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -67,23 +62,28 @@ function UserForm({ editingUser, onFinish }: UserFormProps) {
             ),
           false
         );
-        setMessage("User updated successfully!");
+        toast.success("User updated successfully! ");
       } else {
         mutate(
           key,
           (users: User[] = []) => [...users, { ...formData, id: data.id }],
           false
         );
-        setMessage(`User created successfully! ID: ${data.id}`);
+        toast.success("User created successfully! ");
       }
 
-      setFormData({ name: "", email: "", phone: "" });
+      setFormData(initialFormData);
       onFinish?.();
     } catch (err) {
-      setMessage("Something went wrong!");
+      toast.error("Something went wrong! ");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleReset = () => {
+    setFormData(initialFormData);
+    toast.info("Form cleared");
   };
 
   return (
@@ -104,7 +104,6 @@ function UserForm({ editingUser, onFinish }: UserFormProps) {
         required
         className="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
       />
-
       <input
         type="email"
         name="email"
@@ -114,7 +113,6 @@ function UserForm({ editingUser, onFinish }: UserFormProps) {
         required
         className="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
       />
-
       <input
         type="text"
         name="phone"
@@ -125,23 +123,31 @@ function UserForm({ editingUser, onFinish }: UserFormProps) {
         className="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
       />
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
-      >
-        {loading
-          ? editingUser
-            ? "Updating..."
-            : "Creating..."
-          : editingUser
-          ? "Update"
-          : "Create"}
-      </button>
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 flex-1"
+        >
+          {loading
+            ? editingUser
+              ? "Updating..."
+              : "Creating..."
+            : editingUser
+            ? "Update"
+            : "Create"}
+        </button>
 
-      {message && (
-        <p className="text-sm text-center mt-2 text-gray-700">{message}</p>
-      )}
+        {(formData.name || formData.email || formData.phone) && (
+          <button
+            type="button"
+            onClick={handleReset}
+            className="bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-400 transition flex-1"
+          >
+            Clear
+          </button>
+        )}
+      </div>
     </form>
   );
 }
