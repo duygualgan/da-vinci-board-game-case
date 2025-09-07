@@ -1,10 +1,10 @@
 import useSWR, { mutate } from "swr";
 import UserCard from "./UserCard";
-import UserForm from "./UserForm";
 import { useState } from "react";
 import type { User } from "../../types";
 import { fetcher } from "../../lib/fetcher";
 import DataWrapper from "../DataWrapper";
+import GenericForm from "../GenericForm";
 
 const UsersList = () => {
   const { data, error, isLoading } = useSWR(
@@ -28,8 +28,15 @@ const UsersList = () => {
     <div className="container mx-auto px-6 py-10">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Users</h1>
       <DataWrapper isLoading={isLoading} error={error}>
-        <UserForm
-          editingUser={editingUser}
+        <GenericForm
+          initialData={{ name: "", email: "", phone: "" }}
+          fields={[
+            { name: "name", label: "Full Name" },
+            { name: "email", label: "Email", type: "email" },
+            { name: "phone", label: "Phone" },
+          ]}
+          apiUrl="https://jsonplaceholder.typicode.com/users"
+          editingItem={editingUser}
           onFinish={() => setEditingUser(null)}
         />
 

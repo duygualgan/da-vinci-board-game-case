@@ -1,10 +1,10 @@
 import useSWR, { mutate } from "swr";
 import { useState } from "react";
 import PostCard from "./PostCard";
-import PostForm from "./PostForm";
 import type { Post, User } from "../../types";
 import { fetcher } from "../../lib/fetcher";
 import DataWrapper from "../DataWrapper";
+import GenericForm from "../GenericForm";
 
 const PostsList = () => {
   const {
@@ -65,8 +65,15 @@ const PostsList = () => {
       <DataWrapper isLoading={postsLoading} error={postsError}>
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Posts</h1>
 
-        <PostForm
-          editingPost={editingPost}
+        <GenericForm
+          initialData={{ userId: 1, title: "", body: "" }}
+          fields={[
+            { name: "userId", label: "User ID", type: "number" },
+            { name: "title", label: "Title" },
+            { name: "body", label: "Body", type: "textarea" },
+          ]}
+          apiUrl="https://jsonplaceholder.typicode.com/posts"
+          editingItem={editingPost}
           onFinish={() => setEditingPost(null)}
         />
 

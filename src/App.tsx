@@ -5,6 +5,7 @@ import PostsPage from "./pages/PostsPage";
 import Navbar from "./components/Navbar";
 import UserDetailPage from "./pages/users/[id]";
 import PostDetail from "./components/posts/PostDetail";
+import FavoritesPage from "./pages/FavoritesPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/users/:id" element={<UserDetailPage />} />
           <Route path="/posts" element={<PostsPage />} />
           <Route path="/posts/:id" element={<PostDetail />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
         </Routes>
       </main>
     </BrowserRouter>

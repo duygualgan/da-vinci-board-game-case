@@ -1,8 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import { useFavoritesStore } from "../stores/useFavoritesStore";
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const favoritesCount = useFavoritesStore((s) => s.favorites.length);
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/95 backdrop-blur-md border-b border-gray-100 z-50">
@@ -36,6 +38,22 @@ export default function Nav() {
               }
             >
               Posts
+            </NavLink>
+
+            <NavLink
+              to="/favorites"
+              className={({ isActive }) =>
+                `relative font-medium ${
+                  isActive ? "text-indigo-600" : "text-gray-700"
+                }`
+              }
+            >
+              Favorites
+              {favoritesCount > 0 && (
+                <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white">
+                  {favoritesCount}
+                </span>
+              )}
             </NavLink>
           </div>
 
@@ -82,6 +100,18 @@ export default function Nav() {
               className="block font-medium text-gray-700"
             >
               Posts
+            </NavLink>
+            <NavLink
+              onClick={() => setOpen(false)}
+              to="/favorites"
+              className="flex items-center gap-2 font-medium text-gray-700"
+            >
+              Favorites
+              {favoritesCount > 0 && (
+                <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white">
+                  {favoritesCount}
+                </span>
+              )}
             </NavLink>
           </div>
         </div>
