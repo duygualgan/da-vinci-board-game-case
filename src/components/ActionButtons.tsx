@@ -1,5 +1,6 @@
 import { useState } from "react";
 import DeleteConfirmDialog from "./DeleteConfirmDialog";
+import { scrollToTop } from "../utils/scroll";
 
 interface ActionButtonsProps<T> {
   item: T;
@@ -21,6 +22,7 @@ export default function ActionButtons<T extends { id?: number }>({
         onClick={(e) => {
           e.stopPropagation();
           onEdit?.(item);
+          scrollToTop();
         }}
       >
         Edit
