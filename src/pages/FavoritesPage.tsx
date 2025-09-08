@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useFavoritesStore } from "../stores/useFavoritesStore";
 import type { Post } from "../types";
 import PostCard from "../components/posts/PostCard";
+import { scrollToTop } from "../utils/scroll";
 
 export default function FavoritesPage() {
   const navigate = useNavigate();
@@ -28,7 +29,9 @@ export default function FavoritesPage() {
             </button>
           ) : (
             <button
-              onClick={() => navigate("/posts")}
+              onClick={() => {
+                scrollToTop();
+                navigate("/posts")}}
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
             >
               See Posts

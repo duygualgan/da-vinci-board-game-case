@@ -4,6 +4,7 @@ import PostCard from "../components/posts/PostCard";
 import type { Post } from "../types";
 import { fetcher } from "../lib/fetcher";
 import Spinner from "../components/Spinner";
+import { scrollToTop } from "../utils/scroll";
 
 const Home = () => {
   const { data, error, isLoading } = useSWR<Post[]>(
@@ -14,18 +15,18 @@ const Home = () => {
 
   return (
     <div>
-      <section className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white py-20 px-6 text-center rounded-b-3xl shadow-lg">
+      <section className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white py-28 px-6 text-center shadow-lg">
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-4">
           Hoş Geldiniz
         </h1>
         <p className="text-lg sm:text-xl mb-6">
-          Kullanıcı postlarını keşfet, yeni içerikler ekle ve düzenle.
+          Postları keşfet, yeni içerikler ekle, düzenle ve beğen.
         </p>
         <button
-          onClick={() => navigate("/posts")}
+          onClick={() => navigate("/favorites")}
           className="bg-white text-indigo-600 font-semibold px-6 py-3 rounded-lg shadow hover:bg-gray-100 transition"
         >
-          Postları Gör
+          Beğendiğin postları gör
         </button>
       </section>
       <section className="container mx-auto px-6 py-12">
@@ -52,7 +53,10 @@ const Home = () => {
 
         <div className="flex justify-center mt-10">
           <button
-            onClick={() => navigate("/posts")}
+            onClick={() => {
+              navigate("/posts");
+              scrollToTop();
+            }}
             className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow hover:bg-indigo-700 transition"
           >
             See More

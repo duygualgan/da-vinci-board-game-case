@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import type { User } from "../../types";
 import ActionButtons from "../ActionButtons";
+import { scrollToTop } from "../../utils/scroll";
 
 interface UserCardProps {
   user: User;
@@ -12,7 +13,9 @@ const UserCard = ({ user, onEdit, onDelete }: UserCardProps) => {
   const navigate = useNavigate();
   return (
     <div
-      onClick={() => navigate(`/users/${user.id}`)}
+      onClick={() => {
+       scrollToTop();
+        navigate(`/users/${user.id}`)}}
       className="cursor-pointer rounded-xl shadow-md bg-white p-5 hover:shadow-xl transition duration-300 hover:-translate-y-1 relative"
     >
       <div className="flex flex-col gap-2">
